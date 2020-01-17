@@ -1,4 +1,6 @@
-# NOTE: -qt supports PyQt5 > PyQt4 > PySide modules (in order of preference)
+# NOTE: for version >= 7.0.0 without python 2 support see python3-pillow.spec
+#
+# NOTE: -qt supports PyQt5 > PySide2 > PyQt4 > PySide modules (in order of preference; PyQt4 and PySide are deprecated)
 #
 # bootstrap building docs (pillow is required by docutils, docutils are
 #  required by sphinx; pillow build-requires sphinx)
@@ -7,13 +9,13 @@
 %bcond_with	doc	# Sphinx documentation (crashes - without DISPLAY?)
 %bcond_without	tests	# unit tests
 %bcond_without	python2 # CPython 2.x module
-%bcond_without	python3 # CPython 3.x module
+%bcond_with	python3 # CPython 3.x module
 
 %define		module	pillow
 Summary:	Python 2 image processing library
 Summary(pl.UTF-8):	Biblioteka do przetwarzania obrazów dla Pythona 2
 Name:		python-%{module}
-# NOTE: keep 6.x in this spec for python 2.x support
+# NOTE: keep 6.x in this spec for python 2.x support (see note above)
 Version:	6.2.2
 Release:	1
 # License: see http://www.pythonware.com/products/pil/license.htm
@@ -24,7 +26,7 @@ Source0:	https://files.pythonhosted.org/packages/source/P/Pillow/Pillow-%{versio
 # Source0-md5:	46cad14f0044a5ac4b2d801271528893
 Patch0:		%{name}-subpackage.patch
 Patch1:		x32.patch
-URL:		http://python-pillow.github.io/
+URL:		https://python-pillow.org/
 BuildRequires:	freetype-devel >= 2
 BuildRequires:	ghostscript
 BuildRequires:	lcms2-devel >= 2
@@ -118,7 +120,7 @@ Summary:	Documentation for Pillow module
 Summary(pl.UTF-8):	Dokumentacja do modułu Pillow
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -148,7 +150,7 @@ Summary:	PIL image wrapper for Qt
 Summary(pl.UTF-8):	Obudowanie obrazów PIL dla Qt
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
-Requires:	python-PyQt4
+Requires:	python-PyQt5
 Provides:	python-PIL-qt = %{version}-%{release}
 
 %description qt
@@ -195,7 +197,7 @@ Summary(pl.UTF-8):	Pliki programistyczne modułu Pillow
 Group:		Development/Libraries
 Requires:	libjpeg-devel
 Requires:	python3-%{module} = %{version}-%{release}
-Requires:	python3-devel >= 1:3.4
+Requires:	python3-devel >= 1:3.5
 Requires:	zlib-devel
 
 %description -n python3-%{module}-devel
@@ -209,7 +211,7 @@ Summary:	Documentation for Pillow module
 Summary(pl.UTF-8):	Dokumentacja do modułu Pillow
 Group:		Documentation
 Requires:	python3-%{module} = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -223,7 +225,7 @@ Dokumentacja do modułu Pillow.
 Summary:	Tk interface for Pillow module
 Summary(pl.UTF-8):	Interfejs Tk do modułu Pillow
 Group:		Libraries/Python
-Requires:	python-tkinter
+Requires:	python3-tkinter >= 1:3.5
 Requires:	python3-%{module} = %{version}-%{release}
 
 %description -n python3-%{module}-tk
@@ -237,7 +239,7 @@ Summary:	PIL image wrapper for Qt
 Summary(pl.UTF-8):	Obudowanie obrazów PIL dla Qt
 Group:		Libraries/Python
 Requires:	python3-%{module} = %{version}-%{release}
-Requires:	python3-PyQt4
+Requires:	python3-PyQt5
 Obsoletes:	python3-%{module} <= 2.0.0-5.git93a488e8
 
 %description -n python3-%{module}-qt
@@ -252,14 +254,6 @@ Obudowanie obrazów PIL dla Qt.
 %if "%{_lib}" == "libx32"
 %patch1 -p1
 %endif
-
-# Strip shebang on non-executable file
-#sed -i 1d PIL/OleFileIO.py
-
-# Fix file encoding
-iconv --from=ISO-8859-1 --to=UTF-8 PIL/WalImageFile.py > PIL/WalImageFile.py.new && \
-touch -r PIL/WalImageFile.py PIL/WalImageFile.py.new && \
-%{__mv} PIL/WalImageFile.py.new PIL/WalImageFile.py
 
 %build
 %py_build
@@ -404,7 +398,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python3-%{module}-tk
 %defattr(644,root,root,755)
-%{py3_sitedir}/PIL/_imagingtk.cpython-*.so
+%attr(755,root,root) %{py3_sitedir}/PIL/_imagingtk.cpython-*.so
 %{py3_sitedir}/PIL/ImageTk.py
 %{py3_sitedir}/PIL/SpiderImagePlugin.py
 %{py3_sitedir}/PIL/_tkinter_finder.py
