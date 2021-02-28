@@ -295,11 +295,6 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{py_incdir}/Imaging
 cp -p src/libImaging/*.h $RPM_BUILD_ROOT%{py_incdir}/Imaging
 %py_install
-
-# Fix non-standard-executable-perm
-chmod +x $RPM_BUILD_ROOT%{py_sitedir}/PIL/*.so
-
-%{__rm} -r $RPM_BUILD_ROOT%{py_sitedir}/{Tests,selftest.py*}
 %py_postclean
 %endif
 
@@ -308,11 +303,6 @@ chmod +x $RPM_BUILD_ROOT%{py_sitedir}/PIL/*.so
 install -d $RPM_BUILD_ROOT%{py3_incdir}/Imaging
 cp -p src/libImaging/*.h $RPM_BUILD_ROOT%{py3_incdir}/Imaging
 %py3_install
-
-# Fix non-standard-executable-perm
-chmod +x $RPM_BUILD_ROOT%{py3_sitedir}/PIL/*.so
-
-%{__rm} -r $RPM_BUILD_ROOT%{py3_sitedir}/{Tests,selftest.py,__pycache__/selftest.*}
 %endif
 
 %clean
