@@ -120,9 +120,7 @@ Summary:	Documentation for Pillow module
 Summary(pl.UTF-8):	Dokumentacja do modułu Pillow
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description doc
 Documentation for Pillow module.
@@ -211,9 +209,7 @@ Summary:	Documentation for Pillow module
 Summary(pl.UTF-8):	Dokumentacja do modułu Pillow
 Group:		Documentation
 Requires:	python3-%{module} = %{version}-%{release}
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description -n python3-%{module}-doc
 Documentation for Pillow module.
