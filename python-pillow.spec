@@ -17,7 +17,7 @@ Summary(pl.UTF-8):	Biblioteka do przetwarzania obrazów dla Pythona 2
 Name:		python-%{module}
 # NOTE: keep 6.x in this spec for python 2.x support (see note above)
 Version:	6.2.2
-Release:	2
+Release:	3
 # License: see http://www.pythonware.com/products/pil/license.htm
 License:	MIT
 Group:		Libraries/Python
