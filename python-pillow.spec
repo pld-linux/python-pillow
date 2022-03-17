@@ -275,15 +275,23 @@ PYTHONPATH=$(pwd)/build-3/%{py3_libbuilddir} \
 cp -R $PWD/Tests $PWD/build-2/%py2_libbuilddir/Tests
 cp -R $PWD/selftest.py $PWD/build-2/%py2_libbuilddir/selftest.py
 cd build-2/%py2_libbuilddir
-PYTHONPATH=$PWD %{__python} selftest.py
+PYTHONPATH=$PWD \
+%{__python} selftest.py
 cd ../..
+%{__rm} -r build-2/%py2_libbuilddir/Tests
+%{__rm} build-2/%py2_libbuilddir/selftest.py*
 
 %if %{with python3}
 # Check Python 3 modules
 cp -R $PWD/Tests $PWD/build-3/%py3_libbuilddir/Tests
 cp -R $PWD/selftest.py $PWD/build-3/%py3_libbuilddir/selftest.py
 cd build-3/%py3_libbuilddir
-PYTHONPATH=$PWD %{__python3} selftest.py
+PYTHONPATH=$PWD \
+%{__python3} selftest.py
+cd ../..
+%{__rm} -r build-3/%py3_libbuilddir/Tests
+%{__rm} build-3/%py3_libbuilddir/selftest.py
+%{__rm} build-3/%py3_libbuilddir/__pycache__/selftest.*
 %endif
 %endif
 
