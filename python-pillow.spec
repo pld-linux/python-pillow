@@ -17,7 +17,7 @@ Summary(pl.UTF-8):	Biblioteka do przetwarzania obrazów dla Pythona 2
 Name:		python-%{module}
 # NOTE: keep 6.x in this spec for python 2.x support (see note above)
 Version:	6.2.2
-Release:	3
+Release:	4
 # License: see http://www.pythonware.com/products/pil/license.htm
 License:	MIT
 Group:		Libraries/Python
@@ -351,9 +351,11 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/PIL/SpiderImagePlugin.py[co]
 %{py_sitedir}/PIL/_tkinter_finder.py[co]
 
+%if 0
 %files qt
 %defattr(644,root,root,755)
 %{py_sitedir}/PIL/ImageQt.py[co]
+%endif
 
 %if %{with python3}
 %files -n python3-%{module}
