@@ -10,6 +10,7 @@
 %bcond_without	tests	# unit tests
 %bcond_without	python2 # CPython 2.x module
 %bcond_with	python3 # CPython 3.x module
+%bcond_with	py2_qt	# CPython 2.x Qt package
 
 %define		module	pillow
 Summary:	Python 2 image processing library
@@ -17,7 +18,7 @@ Summary(pl.UTF-8):	Biblioteka do przetwarzania obrazów dla Pythona 2
 Name:		python-%{module}
 # NOTE: keep 6.x in this spec for python 2.x support (see note above)
 Version:	6.2.2
-Release:	4
+Release:	5
 # License: see http://www.pythonware.com/products/pil/license.htm
 License:	MIT
 Group:		Libraries/Python
@@ -69,8 +70,8 @@ Provides:	pythonegg(pil) = %{version}
 Obsoletes:	python-PIL < 1:1.1.8
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		py2_libbuilddir %(python -c 'import sys; import sysconfig; print("lib.{p}-{v[0]}.{v[1]}".format(p=sysconfig.get_platform(), v=sys.version_info))')
-%define		py3_libbuilddir %(python3 -c 'import sys; import sysconfig; print("lib.{p}-{v[0]}.{v[1]}".format(p=sysconfig.get_platform(), v=sys.version_info))')
+%define		py2_libbuilddir %(%{__python} -c 'import sys; import sysconfig; print("lib.{p}-{v[0]}.{v[1]}".format(p=sysconfig.get_platform(), v=sys.version_info))')
+%define		py3_libbuilddir %(%{__python3} -c 'import sys; import sysconfig; print("lib.{p}-{v[0]}.{v[1]}".format(p=sysconfig.get_platform(), v=sys.version_info))')
 
 %description
 Python image processing library, fork of the Python Imaging Library
@@ -252,12 +253,14 @@ Obudowanie obrazów PIL dla Qt.
 %endif
 
 %build
+%if %{with python2}
 %py_build
 
 %if %{with doc}
 PYTHONPATH=$(pwd)/build-2/%{py2_libbuilddir} \
 %{__make} -C docs html \
 	SPHINXBUILD=sphinx-build-2
+%endif
 %endif
 
 %if %{with python3}
@@ -271,6 +274,7 @@ PYTHONPATH=$(pwd)/build-3/%{py3_libbuilddir} \
 %endif
 
 %if %{with tests}
+%if %{with python2}
 # Check Python 2 modules
 cp -R $PWD/Tests $PWD/build-2/%py2_libbuilddir/Tests
 cp -R $PWD/selftest.py $PWD/build-2/%py2_libbuilddir/selftest.py
@@ -280,6 +284,7 @@ PYTHONPATH=$PWD \
 cd ../..
 %{__rm} -r build-2/%py2_libbuilddir/Tests
 %{__rm} build-2/%py2_libbuilddir/selftest.py*
+%endif
 
 %if %{with python3}
 # Check Python 3 modules
@@ -316,6 +321,7 @@ cp -p src/libImaging/*.h $RPM_BUILD_ROOT%{py3_incdir}/Imaging
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %files
 %defattr(644,root,root,755)
 %doc CHANGES.rst README.rst docs/COPYING
@@ -351,10 +357,11 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/PIL/SpiderImagePlugin.py[co]
 %{py_sitedir}/PIL/_tkinter_finder.py[co]
 
-%if 0
+%if %{with qt}
 %files qt
 %defattr(644,root,root,755)
 %{py_sitedir}/PIL/ImageQt.py[co]
+%endif
 %endif
 
 %if %{with python3}
